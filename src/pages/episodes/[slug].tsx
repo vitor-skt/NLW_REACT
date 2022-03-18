@@ -3,6 +3,7 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import Image from 'next/image';
 import { api } from "../../Services/api";
 import { format, parseISO } from "date-fns";
+import Link from "next/link";
 import ptBR from 'date-fns/locale/pt-BR';
 import { convertDurationToTimeString } from "../../utils/convertDurationToTimeString";
 import styles from "./episode.module.scss";
@@ -28,9 +29,11 @@ export default function Episodes({ episode }: EpisodeProps) {
     return (
         <div className={styles.episode}>
             <div className={styles.thumbnailContainer}>
-                <button type="button">
-                    <img src="/arrowLeft.svg" alt="Voltar" />
-                </button>
+                <Link href="/">
+                    <button type="button">
+                        <img src="/arrowLeft.svg" alt="Voltar" />
+                    </button>
+                </Link>
                 <Image
                     width={700}
                     height={160}
@@ -48,9 +51,7 @@ export default function Episodes({ episode }: EpisodeProps) {
                 <span>{episode.durationAsString}</span>
             </header>
 
-            <div>
-                {episode.description}
-            </div>
+            <div className={styles.description} dangerouslySetInnerHTML={{ __html: episode.description }} />
         </div>
     )
 }
