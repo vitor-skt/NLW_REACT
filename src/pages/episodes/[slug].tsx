@@ -1,15 +1,65 @@
 import { useRouter } from "next/router"
-import { GetStaticProps } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
+import Image from 'next/image';
 import { api } from "../../Services/api";
 import { format, parseISO } from "date-fns";
-import ptBR from "date-fns/esm/locale/pt-BR";
+import ptBR from 'date-fns/locale/pt-BR';
 import { convertDurationToTimeString } from "../../utils/convertDurationToTimeString";
+import styles from "./episode.module.scss";
 
-export default function Episodes() {
+type Episode = {
+    id: string;
+    title: string;
+    thumbnail: string;
+    members: string;
+    duration: number;
+    durationAsString: string;
+    url: string;
+    publishedAt: string;
+    description: string;
+}
+
+type EpisodeProps = {
+    episode: Episode;
+}
+
+export default function Episodes({ episode }: EpisodeProps) {
     const router = useRouter();
     return (
-        <h1>{router.query.slug}</h1>
+        <div className={styles.episode}>
+            <div className={styles.thumbnailContainer}>
+                <button type="button">
+                    <img src="/arrowLeft.svg" alt="Voltar" />
+                </button>
+                <Image
+                    width={700}
+                    height={160}
+                    src={episode.thumbnail}
+                    objectFit="cover"
+                />
+                <button type="button">
+                    <img src="/play.svg" alt="tocarEP" />
+                </button>
+            </div>
+            <header>
+                <h1>{episode.title}</h1>
+                <span>{episode.members}</span>
+                <span>{episode.publishedAt}</span>
+                <span>{episode.durationAsString}</span>
+            </header>
+
+            <div>
+                {episode.description}
+            </div>
+        </div>
     )
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+    return {
+        paths: [],
+        fallback: 'blocking'
+    }
 }
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
@@ -30,7 +80,9 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     }
 
     return {
-        props: {},
+        props: {
+            episode,
+        },
         revalidate: 60 * 60 * 24, // 24 hours
     }
 }
