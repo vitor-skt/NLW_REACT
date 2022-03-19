@@ -1,9 +1,11 @@
+import { useContext } from "react";
 import { GetStaticProps } from "next";
 import Image from "next/image";
 import { api } from "../Services/api";
 import { format, parseISO } from "date-fns";
 import ptBR from 'date-fns/locale/pt-BR';
 import Link from "next/link";
+import { PlayerContext } from "../contexts/PlayerContext";
 import { convertDurationToTimeString } from "../utils/convertDurationToTimeString";
 
 import styles from "./home.module.scss";
@@ -29,10 +31,12 @@ type HomeProps = {
 
 
 export default function Home({ allEpisodes, latestEpisodes }: HomeProps) {
+  const player = useContext(PlayerContext)
+
   return (
     <div className={styles.homePage}>
       <section className={styles.latestEpisodes}>
-        <h2>Ultimos lançamentos</h2>
+        <h2>Ultimos lançamentos {player}</h2>
 
         <ul>
           {latestEpisodes.map(episode => {
